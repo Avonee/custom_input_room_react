@@ -80,6 +80,7 @@ const RoomAllocation = (props) => {
 
   const changeResult = (event, index, name) => {
     let newData;
+    let newDataPass;
     let getRoomSet = resultDisable.find((i) => i.id === index);
 
     if (remainGuest > 0) {
@@ -112,7 +113,14 @@ const RoomAllocation = (props) => {
     });
     setRemainGuest(guestTotal - new_sumAll);
 
-    // setResult
+    newDataPass = [...newData];
+    for (let i = 0; i < newDataPass.length; i++) {
+      newDataPass[i] = {
+        adult: newDataPass[i].adult,
+        child: newDataPass[i].child,
+      };
+    }
+    setResult(newDataPass);
   };
 
   const renderBook = (item, index) => {
