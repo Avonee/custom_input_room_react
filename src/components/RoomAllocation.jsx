@@ -4,8 +4,8 @@ import "./CustomInputNumber.css";
 import CustomInputNumber from "./CustomInputNumber.jsx";
 
 const RoomAllocation = (props) => {
-  const [guestTotal, setGuestTotal] = useState(0);
-  const [roomTotal, setRoomTotal] = useState(0);
+  const [guestTotal, setGuestTotal] = useState(props.guest);
+  const [roomTotal, setRoomTotal] = useState(props.room);
   const [adult, setAdult] = useState(0); // default set: adult
   const [remainGuest, setRemainGuest] = useState(guestTotal);
   const [warning, setWarning] = useState("");
