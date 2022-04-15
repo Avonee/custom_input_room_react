@@ -13,13 +13,13 @@ const RoomAllocation = (props) => {
   const [resultDisable, setResultDisable] = useState([]);
 
   const defaultRoom = { adult: 1, child: 0 };
-  const defaultRoomDisable = {
-    adult: 1,
-    child: 0,
-    adultDisable: false,
-    childDisable: false,
-    totalPeople: 4,
-  };
+  //   const defaultRoomDisable = {
+  //     adult: 1,
+  //     child: 0,
+  //     adultDisable: false,
+  //     childDisable: false,
+  //     totalPeople: 4,
+  //   };
   const defaultRoomDisableTrue = {
     adult: 1,
     child: 0,
@@ -50,11 +50,18 @@ const RoomAllocation = (props) => {
       setWarning("");
       setAdult(roomTotal);
       setRemainGuest(guestTotal - roomTotal);
-      let newList = Array(Number(roomTotal)).fill(defaultRoom);
-      setResult(newList);
-      // allocation
-      //   let newListDisable = Array(Number(roomTotal)).fill(defaultRoomDisable);
 
+      let newList = new Array(Number(roomTotal));
+      for (let i = 0; i < Number(roomTotal); i++) {
+        newList[i] = {
+          adult: 1,
+          child: 0,
+        };
+      }
+      //   console.log("newListDisable????", filledArray);
+      setResult(newList);
+
+      // allocation
       let filledArray = new Array(Number(roomTotal));
       for (let i = 0; i < Number(roomTotal); i++) {
         filledArray[i] = {
@@ -77,18 +84,74 @@ const RoomAllocation = (props) => {
   }, [result]);
 
   const changeResult = (event, index, name) => {
-    let newData;
-    let getRoomSet = resultDisable.find((i) => i.id === index);
+    if (remainGuest > 0) {
+      let newData;
+      let getRoomSet = resultDisable.find((i) => i.id === index);
 
-    if (name === "totalAdultARoom") {
-      getRoomSet.adult = event;
-    } else {
-      getRoomSet.child = event;
+      if (name === "totalAdultARoom") {
+        getRoomSet.adult = event;
+      } else {
+        getRoomSet.child = event;
+      }
+
+      newData = [...resultDisable];
+      newData.splice(index, 1, getRoomSet);
+      setResultDisable(newData);
+
+      let new_sumAll = 0;
+      newData.forEach((data) => {
+        new_sumAll += data.adult;
+        new_sumAll += data.child;
+      });
+      setRemainGuest(guestTotal - new_sumAll);
+    } else if (remainGuest == 0) {
+      // could only count down
+
+      let newData;
+      let getRoomSet = resultDisable.find((i) => i.id === index);
+
+      if (name === "totalAdultARoom") {
+        if (getRoomSet.adult - event >= 0) {
+          getRoomSet.adult = event;
+        } else {
+          console.log("lock big");
+          // TODO:
+          //   getRoomSet.adultDisable = true;
+          //   getRoomSet.totalPeople = getRoomSet.adult + getRoomSet.child;
+        }
+      } else {
+        if (getRoomSet.child - event >= 0) {
+          getRoomSet.child = event;
+        } else {
+          console.log("lock samll");
+          // TODO:
+          //   getRoomSet.childDisable = true;
+          //   getRoomSet.totalPeople = getRoomSet.adult + getRoomSet.child;
+        }
+      }
+
+      newData = [...resultDisable];
+      newData.splice(index, 1, getRoomSet);
+      setResultDisable(newData);
+
+      //   console.log("newData::::::", newData);
+
+      let new_sumAll = 0;
+      newData.forEach((data) => {
+        new_sumAll += data.adult;
+        new_sumAll += data.child;
+      });
+      //   console.log("right now alll new 222 ??", new_sumAll);
+      setRemainGuest(guestTotal - new_sumAll);
     }
 
-    newData = [...resultDisable];
-    newData.splice(index, 1, getRoomSet);
-    setResultDisable(newData);
+    // setResult
+  };
+
+  const changeLock = (event, index, name) => {
+    if (remainGuest == 0) {
+      // could only count down
+    }
   };
 
   const renderBook = (item, index) => {
@@ -111,7 +174,7 @@ const RoomAllocation = (props) => {
               onChange={(event) =>
                 changeResult(event, index, "totalAdultARoom")
               }
-              //   onBlur={} //
+              onBlur={(event) => changeLock(event, index, "totalAdultARoom")}
             />
           </div>
         </div>
@@ -130,6 +193,7 @@ const RoomAllocation = (props) => {
               onChange={(event) =>
                 changeResult(event, index, "totalChildARoom")
               }
+              onBlur={(event) => changeLock(event, index, "totalChildARoom")}
             />
           </div>
         </div>
