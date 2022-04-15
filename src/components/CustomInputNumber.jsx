@@ -22,7 +22,6 @@ const CustomInputNumber = (props) => {
       setDisableUp(true);
     }
     props.onChange(inputValue);
-    props.onBlur(inputValue);
   }, [inputValue]);
 
   useEffect(() => {

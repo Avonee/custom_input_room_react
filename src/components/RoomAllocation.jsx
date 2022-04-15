@@ -13,19 +13,6 @@ const RoomAllocation = (props) => {
   const [resultDisable, setResultDisable] = useState([]);
 
   const defaultRoom = { adult: 1, child: 0 };
-  //   const defaultRoomDisable = {
-  //     adult: 1,
-  //     child: 0,
-  //     adultDisable: false,
-  //     childDisable: false,
-  //     totalPeople: 4,
-  //   };
-  //   const defaultRoomDisableTrue = {
-  //     adult: 1,
-  //     child: 0,
-  //     adultDisable: true,
-  //     childDisable: true,
-  //   };
 
   useEffect(() => {
     if (guestTotal - roomTotal < 0) {
@@ -38,9 +25,6 @@ const RoomAllocation = (props) => {
         let newList = Array(Number(guestTotal)).fill(defaultRoom);
         setResult(newList);
         // disable all btn
-        // let newListDisable = Array(Number(guestTotal)).fill(
-        //   defaultRoomDisableTrue
-        // );
 
         let filledArray = new Array(Number(roomTotal));
         for (let i = 0; i < Number(roomTotal); i++) {
@@ -71,7 +55,6 @@ const RoomAllocation = (props) => {
           child: 0,
         };
       }
-      //   console.log("newListDisable????", filledArray);
       setResult(newList);
 
       // allocation
@@ -86,7 +69,6 @@ const RoomAllocation = (props) => {
         };
         filledArray[i].id = i;
       }
-      //   console.log("newListDisable????", filledArray);
       setResultDisable(filledArray);
     }
   }, [guestTotal, roomTotal]);
@@ -97,74 +79,40 @@ const RoomAllocation = (props) => {
   }, [result]);
 
   const changeResult = (event, index, name) => {
-    if (remainGuest > 0) {
-      let newData;
-      let getRoomSet = resultDisable.find((i) => i.id === index);
+    let newData;
+    let getRoomSet = resultDisable.find((i) => i.id === index);
 
+    if (remainGuest > 0) {
       if (name === "totalAdultARoom") {
         getRoomSet.adult = event;
       } else {
         getRoomSet.child = event;
       }
-
-      newData = [...resultDisable];
-      newData.splice(index, 1, getRoomSet);
-      setResultDisable(newData);
-
-      let new_sumAll = 0;
-      newData.forEach((data) => {
-        new_sumAll += data.adult;
-        new_sumAll += data.child;
-      });
-      setRemainGuest(guestTotal - new_sumAll);
     } else if (remainGuest == 0) {
       // could only count down
-
-      let newData;
-      let getRoomSet = resultDisable.find((i) => i.id === index);
-
       if (name === "totalAdultARoom") {
         if (getRoomSet.adult - event >= 0) {
           getRoomSet.adult = event;
-        } else {
-          console.log("lock big");
-          // TODO:
-          //   getRoomSet.adultDisable = true;
-          //   getRoomSet.totalPeople = getRoomSet.adult + getRoomSet.child;
         }
       } else {
         if (getRoomSet.child - event >= 0) {
           getRoomSet.child = event;
-        } else {
-          console.log("lock samll");
-          // TODO:
-          //   getRoomSet.childDisable = true;
-          //   getRoomSet.totalPeople = getRoomSet.adult + getRoomSet.child;
         }
       }
-
-      newData = [...resultDisable];
-      newData.splice(index, 1, getRoomSet);
-      setResultDisable(newData);
-
-      //   console.log("newData::::::", newData);
-
-      let new_sumAll = 0;
-      newData.forEach((data) => {
-        new_sumAll += data.adult;
-        new_sumAll += data.child;
-      });
-      //   console.log("right now alll new 222 ??", new_sumAll);
-      setRemainGuest(guestTotal - new_sumAll);
     }
+
+    newData = [...resultDisable];
+    newData.splice(index, 1, getRoomSet);
+    setResultDisable(newData);
+
+    let new_sumAll = 0;
+    newData.forEach((data) => {
+      new_sumAll += data.adult;
+      new_sumAll += data.child;
+    });
+    setRemainGuest(guestTotal - new_sumAll);
 
     // setResult
-  };
-
-  const changeLock = (event, index, name) => {
-    if (remainGuest == 0) {
-      // could only count down
-    }
   };
 
   const renderBook = (item, index) => {
@@ -179,7 +127,11 @@ const RoomAllocation = (props) => {
           <div className="room-count">
             <CustomInputNumber
               min={1}
-              max={item.totalPeople - item.child}
+              max={
+                remainGuest > 0
+                  ? item.totalPeople - item.child
+                  : item.adult + item.child - item.child
+              }
               step={1}
               value={item.adult}
               name={"totalAdultARoom"}
@@ -187,7 +139,7 @@ const RoomAllocation = (props) => {
               onChange={(event) =>
                 changeResult(event, index, "totalAdultARoom")
               }
-              onBlur={(event) => changeLock(event, index, "totalAdultARoom")}
+              //   onBlur={(event) => changeLock(event, index, "totalAdultARoom")}
             />
           </div>
         </div>
@@ -198,7 +150,11 @@ const RoomAllocation = (props) => {
           <div className="room-count">
             <CustomInputNumber
               min={0}
-              max={item.totalPeople - item.adult}
+              max={
+                remainGuest > 0
+                  ? item.totalPeople - item.adult
+                  : item.adult + item.child - item.adult
+              }
               step={1}
               value={item.child}
               name={"totalChildARoom"}
@@ -206,7 +162,7 @@ const RoomAllocation = (props) => {
               onChange={(event) =>
                 changeResult(event, index, "totalChildARoom")
               }
-              onBlur={(event) => changeLock(event, index, "totalChildARoom")}
+              //   onBlur={(event) => changeLock(event, index, "totalChildARoom")}
             />
           </div>
         </div>
@@ -222,8 +178,6 @@ const RoomAllocation = (props) => {
         <input
           className="square square_input"
           type="number"
-          //   min={props.min}
-          //   max={props.max}
           step={props.step}
           name="guestTotal"
           value={guestTotal}
@@ -234,8 +188,6 @@ const RoomAllocation = (props) => {
         <input
           className="square square_input"
           type="number"
-          //   min={props.min}
-          //   max={props.max}
           step={props.step}
           name="roomTotal"
           value={roomTotal}
