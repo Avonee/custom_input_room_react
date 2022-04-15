@@ -1,16 +1,14 @@
 import React from "react";
-import CustomInputNumber from "./src/components/CustomInputNumber.jsx";
+import RoomAllocation from "./src/components/RoomAllocation.jsx";
 
 const App = () => {
   return (
     <div>
-      <h1>Hello React</h1>
-      <CustomInputNumber
-        min={1}
-        max={10}
-        step={1}
-        name={"totalPeople"}
-        disabled={false}
+      <h1>Hello! Welcome to Room Allocation</h1>
+      <RoomAllocation
+        guest={10}
+        room={3}
+        onChange={(result) => console.log(result)}
       />
     </div>
   );

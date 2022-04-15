@@ -4,7 +4,7 @@ import "./CustomInputNumber.css";
 // import styled from "styled-components";
 
 const CustomInputNumber = (props) => {
-  const [inputValue, setInputValue] = useState(1);
+  const [inputValue, setInputValue] = useState(props.min);
   const [disableInput, setDisableInput] = useState(false);
   const [disableDown, setDisableDown] = useState(true);
   const [disableUp, setDisableUp] = useState(false);
@@ -22,6 +22,12 @@ const CustomInputNumber = (props) => {
       setDisableUp(true);
     }
   }, [inputValue]);
+
+  useEffect(() => {
+    setDisableInput(props.disabled);
+    setDisableDown(props.disabled);
+    setDisableUp(props.disabled);
+  }, [disableInput]);
 
   const onBlurHappen = (value) => {
     if (value > props.min) {

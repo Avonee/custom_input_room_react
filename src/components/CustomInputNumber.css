@@ -10,6 +10,7 @@
   text-align: center;
   vertical-align: middle;
   cursor: pointer;
+  border-color: darkgrey;
 }
 
 .square_input {
@@ -39,4 +40,68 @@ input::-webkit-inner-spin-button {
   border-color: red;
   cursor: default;
   opacity: 0.7;
+}
+
+.btn-confirm {
+  background-color: transparent;
+  color: steelblue;
+  border-color: steelblue;
+  font-size: 16px;
+}
+
+.message {
+  background-color: rgb(210, 231, 238);
+  border-color: rgb(115, 206, 236);
+  border: 1px;
+  height: 48px;
+  border-radius: 5px;
+  margin: 10px auto;
+  color: rgb(106, 103, 103);
+  vertical-align: middle;
+  padding: 10px 18px;
+}
+
+.warn {
+  background-color: rgb(238, 215, 210);
+  border-color: rgb(236, 129, 115);
+  height: 24px;
+  margin: 15 auto;
+  color: rgb(239, 68, 68);
+  padding: 5px 18px;
+}
+
+.warn-text {
+  margin: 0;
+}
+
+.room-section {
+  margin: 20px auto;
+}
+
+.room-list {
+  margin: 10px auto;
+  justify-content: center;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.room-lable {
+  font-size: 0.9em;
+  width: 50%;
+  margin: 8px 0;
+}
+
+.room-count {
+  width: 50%;
+  text-align: right;
+}
+
+.desc {
+  color: rgb(152, 147, 147);
+}
+
+.seperater {
+  color: rgb(176, 172, 172);
+  background-color: rgb(176, 172, 172);
+  height: 1px;
 }
