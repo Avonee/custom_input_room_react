@@ -20,12 +20,12 @@ const RoomAllocation = (props) => {
   //     childDisable: false,
   //     totalPeople: 4,
   //   };
-  const defaultRoomDisableTrue = {
-    adult: 1,
-    child: 0,
-    adultDisable: true,
-    childDisable: true,
-  };
+  //   const defaultRoomDisableTrue = {
+  //     adult: 1,
+  //     child: 0,
+  //     adultDisable: true,
+  //     childDisable: true,
+  //   };
 
   useEffect(() => {
     if (guestTotal - roomTotal < 0) {
@@ -38,10 +38,23 @@ const RoomAllocation = (props) => {
         let newList = Array(Number(guestTotal)).fill(defaultRoom);
         setResult(newList);
         // disable all btn
-        let newListDisable = Array(Number(guestTotal)).fill(
-          defaultRoomDisableTrue
-        );
-        setResultDisable(newListDisable);
+        // let newListDisable = Array(Number(guestTotal)).fill(
+        //   defaultRoomDisableTrue
+        // );
+
+        let filledArray = new Array(Number(roomTotal));
+        for (let i = 0; i < Number(roomTotal); i++) {
+          filledArray[i] = {
+            adult: 1,
+            child: 0,
+            adultDisable: true,
+            childDisable: true,
+            totalPeople: 4,
+          };
+          filledArray[i].id = i;
+        }
+
+        setResultDisable(filledArray);
       }
     } else if (guestTotal - roomTotal * 4 > 0) {
       setWarning("總人數已超過房間可容納數量，房間皆為四人房");
