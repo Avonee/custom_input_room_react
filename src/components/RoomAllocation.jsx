@@ -18,6 +18,7 @@ const RoomAllocation = (props) => {
     child: 0,
     adultDisable: false,
     childDisable: false,
+    totalPeople: 4,
   };
   const defaultRoomDisableTrue = {
     adult: 1,
@@ -52,8 +53,21 @@ const RoomAllocation = (props) => {
       let newList = Array(Number(roomTotal)).fill(defaultRoom);
       setResult(newList);
       // allocation
-      let newListDisable = Array(Number(roomTotal)).fill(defaultRoomDisable);
-      setResultDisable(newListDisable);
+      //   let newListDisable = Array(Number(roomTotal)).fill(defaultRoomDisable);
+
+      let filledArray = new Array(Number(roomTotal));
+      for (let i = 0; i < Number(roomTotal); i++) {
+        filledArray[i] = {
+          adult: 1,
+          child: 0,
+          adultDisable: false,
+          childDisable: false,
+          totalPeople: 4,
+        };
+        filledArray[i].id = i;
+      }
+      //   console.log("newListDisable????", filledArray);
+      setResultDisable(filledArray);
     }
   }, [guestTotal, roomTotal]);
 
@@ -62,7 +76,22 @@ const RoomAllocation = (props) => {
     props.onChange(result);
   }, [result]);
 
-  const renderBook = (item) => {
+  const changeResult = (event, index, name) => {
+    let newData;
+    let getRoomSet = resultDisable.find((i) => i.id === index);
+
+    if (name === "totalAdultARoom") {
+      getRoomSet.adult = event;
+    } else {
+      getRoomSet.child = event;
+    }
+
+    newData = [...resultDisable];
+    newData.splice(index, 1, getRoomSet);
+    setResultDisable(newData);
+  };
+
+  const renderBook = (item, index) => {
     return (
       <div className="room-section">
         房間：{item.adult + item.child} 人
@@ -74,12 +103,14 @@ const RoomAllocation = (props) => {
           <div className="room-count">
             <CustomInputNumber
               min={1}
-              max={4} // todo
+              max={item.totalPeople - item.child}
               step={1}
               value={item.adult}
               name={"totalAdultARoom"}
               disabled={item.adultDisable}
-              //   onChange//
+              onChange={(event) =>
+                changeResult(event, index, "totalAdultARoom")
+              }
               //   onBlur={} //
             />
           </div>
@@ -91,11 +122,14 @@ const RoomAllocation = (props) => {
           <div className="room-count">
             <CustomInputNumber
               min={0}
-              max={3} // todo
+              max={item.totalPeople - item.adult}
               step={1}
               value={item.child}
               name={"totalChildARoom"}
               disabled={item.childDisable}
+              onChange={(event) =>
+                changeResult(event, index, "totalChildARoom")
+              }
             />
           </div>
         </div>
@@ -144,7 +178,7 @@ const RoomAllocation = (props) => {
 
       {warning === "" && guestTotal > 0 && roomTotal > 0
         ? resultDisable.map((item, index) => (
-            <div key={index}>{renderBook(item)}</div>
+            <div key={index}>{renderBook(item, index)}</div>
           ))
         : null}
     </div>

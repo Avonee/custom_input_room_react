@@ -4,7 +4,7 @@ import "./CustomInputNumber.css";
 // import styled from "styled-components";
 
 const CustomInputNumber = (props) => {
-  const [inputValue, setInputValue] = useState(props.min);
+  const [inputValue, setInputValue] = useState(props.value);
   const [disableInput, setDisableInput] = useState(false);
   const [disableDown, setDisableDown] = useState(true);
   const [disableUp, setDisableUp] = useState(false);
@@ -21,6 +21,7 @@ const CustomInputNumber = (props) => {
     } else {
       setDisableUp(true);
     }
+    props.onChange(inputValue);
   }, [inputValue]);
 
   useEffect(() => {
